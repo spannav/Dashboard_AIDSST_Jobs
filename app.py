@@ -194,21 +194,21 @@ tab2_content = dbc.Card(dbc.CardBody([
     html.H4("Demand Side: Jobs & Requirements", className="card-title mb-3 text-cyan"),
     html.P("🖱️ Click a Job Title in the 'Vacancies' chart to cross-filter Skills and Salary.", className="text-muted"),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='chart-2-1-jobs', config={'displayModeBar': False}), md=6),
-        dbc.Col(dcc.Graph(id='chart-2-2-skills', config={'displayModeBar': False}), md=6)
-    ]),
+        dbc.Col(dcc.Graph(id='chart-2-1-jobs', config={'displayModeBar': False}, style={"height": "100%"}), xs=12, lg=6, className="mb-4 d-flex flex-column"),
+        dbc.Col(dcc.Graph(id='chart-2-2-skills', config={'displayModeBar': False}, style={"height": "100%"}), xs=12, lg=6, className="mb-4 d-flex flex-column")
+    ], className="align-items-stretch"),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='chart-2-4-salary', config={'displayModeBar': False}), md=12)
+        dbc.Col(dcc.Graph(id='chart-2-4-salary', config={'displayModeBar': False}, style={"height": "100%"}), xs=12, className="d-flex flex-column")
     ])
-]), className="glass-card mt-3")
+]), className="glass-card mt-3 h-100")
 
 tab3_content = dbc.Card(dbc.CardBody([
     html.H4("Skill Mismatch Analysis", className="card-title mb-3 text-cyan"),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='chart-3-1-radar', config={'displayModeBar': False}), md=6),
-        dbc.Col(dcc.Graph(id='chart-3-2-scatter', config={'displayModeBar': False}), md=6)
-    ])
-]), className="glass-card mt-3")
+        dbc.Col(dcc.Graph(id='chart-3-1-radar', config={'displayModeBar': False}, style={"height": "100%"}), xs=12, lg=6, className="mb-4 d-flex flex-column"),
+        dbc.Col(dcc.Graph(id='chart-3-2-scatter', config={'displayModeBar': False}, style={"height": "100%"}), xs=12, lg=6, className="mb-4 d-flex flex-column")
+    ], className="align-items-stretch")
+]), className="glass-card mt-3 h-100")
 
 app.layout = dbc.Container([
     header,
