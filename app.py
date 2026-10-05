@@ -10,11 +10,13 @@ import plotly.graph_objects as go
 # ==========================================
 
 # Colors from Handoff
-COLOR_DEEP_BLUE = "#0f172a"
-COLOR_TEAL = "#14b8a6"
-COLOR_CORAL = "#f43f5e"
+COLOR_CYAN = "#00F0FF"
+COLOR_MAGENTA = "#B537F2"
+COLOR_TEXT_SEC = "#8DA3C7"
+COLOR_GRID = "rgba(255,255,255,0.05)"
 
-CHART_TEMPLATE = "plotly_dark"
+# Palette for charts
+SCI_FI_PALETTE = [COLOR_CYAN, COLOR_MAGENTA, "#38bdf8", "#818cf8"]
 
 # Payload 1: Salary by Region and Level (USD)
 salary_data = [
@@ -46,7 +48,7 @@ edu_bg_data = [
 ]
 df_edu_bg = pd.DataFrame(edu_bg_data)
 
-# Supply Data Generation based on Real Trends
+# Supply Data Generation
 years = [2020, 2021, 2022, 2023]
 supply_graduates_data = []
 for y in years:
@@ -64,19 +66,15 @@ demand_skills_data = [
   { "skill": "Python", "demand_score": 95, "Job Title": "Data Scientist" },
   { "skill": "Machine Learning", "demand_score": 85, "Job Title": "Data Scientist" },
   { "skill": "Data Visualization", "demand_score": 75, "Job Title": "Data Scientist" },
-  
   { "skill": "Python", "demand_score": 90, "Job Title": "AI Engineer" },
   { "skill": "Deep Learning", "demand_score": 85, "Job Title": "AI Engineer" },
   { "skill": "Cloud (AWS/GCP)", "demand_score": 80, "Job Title": "AI Engineer" },
-  
   { "skill": "SQL", "demand_score": 95, "Job Title": "Data Analyst" },
   { "skill": "Data Visualization", "demand_score": 85, "Job Title": "Data Analyst" },
   { "skill": "Python", "demand_score": 60, "Job Title": "Data Analyst" },
-  
   { "skill": "Python", "demand_score": 95, "Job Title": "Machine Learning Engineer" },
   { "skill": "Machine Learning", "demand_score": 90, "Job Title": "Machine Learning Engineer" },
   { "skill": "Cloud (AWS/GCP)", "demand_score": 85, "Job Title": "Machine Learning Engineer" },
-  
   { "skill": "R", "demand_score": 85, "Job Title": "Statistician" },
   { "skill": "Python", "demand_score": 70, "Job Title": "Statistician" },
   { "skill": "SQL", "demand_score": 60, "Job Title": "Statistician" },
@@ -93,7 +91,6 @@ demand_skills_global = pd.DataFrame([
 ])
 
 # Demand Jobs (Realistic Vacancies)
-job_titles = ['Data Scientist', 'AI Engineer', 'Data Analyst', 'Machine Learning Engineer', 'Statistician']
 demand_jobs = pd.DataFrame([
     {'Job Title': 'Data Analyst', 'Vacancies': 15000},
     {'Job Title': 'Data Scientist', 'Vacancies': 12500},
@@ -102,7 +99,7 @@ demand_jobs = pd.DataFrame([
     {'Job Title': 'Statistician', 'Vacancies': 2500},
 ])
 
-# Supply Skills based on typical curricula
+# Supply Skills
 supply_skills_data = [
   { "skill": "Python", "supply_score": 90 }, 
   { "skill": "SQL", "supply_score": 60 }, 
@@ -127,82 +124,91 @@ tuition_data = [
 supply_tuition = pd.DataFrame(tuition_data)
 
 
+def apply_sci_fi_layout(fig):
+    fig.update_layout(
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        font=dict(color=COLOR_TEXT_SEC, family='Inter, sans-serif'),
+        xaxis=dict(showgrid=False, zeroline=False),
+        yaxis=dict(showgrid=True, gridcolor=COLOR_GRID, zeroline=False),
+        margin=dict(l=40, r=40, t=60, b=40)
+    )
+    return fig
+
+
 # ==========================================
 # 2. APP SETUP & LAYOUT
 # ==========================================
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP]) # Let our CSS handle the dark mode
 app.title = "AI & Data Science Job Market Insights"
-
-# Styling dicts
-card_style = {"backgroundColor": COLOR_DEEP_BLUE, "border": f"1px solid {COLOR_TEAL}", "color": "white"}
 
 # Header
 header = dbc.Row([
     dbc.Col([
-        html.H1("AI & Data Science Job Market Insights", className="text-center mt-4", style={"color": COLOR_TEAL}),
-        html.P("Analyzing Education, Salaries, Skills, and Career Progression globally.", className="text-center mb-4")
+        html.H1("AI & Data Science Job Market Insights", className="text-center mt-4 text-cyan"),
+        html.P("Analyzing Education, Salaries, Skills, and Career Progression globally.", className="text-center mb-4 text-muted")
     ])
 ])
 
 # KPI Cards
 kpi_cards = dbc.Row([
     dbc.Col(dbc.Card(dbc.CardBody([
-        html.H5("Top Hiring Sectors", className="card-title text-muted"),
-        html.H3("Big Tech, FinTech", style={"color": COLOR_CORAL})
-    ]), style=card_style), md=4),
+        html.H5("Top Hiring Sectors", className="card-title"),
+        html.H3("Big Tech, FinTech", className="text-magenta")
+    ]), className="glass-card mb-3"), md=4),
     dbc.Col(dbc.Card(dbc.CardBody([
-        html.H5("Most Demanded Skill", className="card-title text-muted"),
-        html.H3("Python (95% of jobs)", style={"color": COLOR_CORAL})
-    ]), style=card_style), md=4),
+        html.H5("Most Demanded Skill", className="card-title"),
+        html.H3("Python (95%)", className="text-cyan")
+    ]), className="glass-card mb-3"), md=4),
     dbc.Col(dbc.Card(dbc.CardBody([
-        html.H5("Master's Degree Req.", className="card-title text-muted"),
-        html.H3("45%", style={"color": COLOR_CORAL})
-    ]), style=card_style), md=4)
+        html.H5("Master's Degree Req.", className="card-title"),
+        html.H3("45%", className="text-magenta")
+    ]), className="glass-card mb-3"), md=4)
 ], className="mb-4")
 
 # Footer (References)
 footer = dbc.Container([
-    html.Hr(style={"borderColor": COLOR_TEAL}),
-    html.H5("🔗 Open Data Sources & References", className="mt-4", style={"color": COLOR_TEAL}),
+    html.Hr(style={"borderColor": COLOR_GRID}),
+    html.H5("🔗 Open Data Sources & References", className="mt-4 text-cyan"),
     html.Ul([
-        html.Li([html.A("Kaggle Survey Data", href="#", style={"color": COLOR_CORAL}), ": Industry survey covering education, skills, tools."]),
-        html.Li([html.A("Stanford AI Index", href="#", style={"color": COLOR_CORAL}), ": Insights into AI economic trends, hiring rates."]),
-        html.Li([html.A("Job Posting Data", href="#", style={"color": COLOR_CORAL}), ": Categorized job postings detailing requirements."])
+        html.Li([html.A("Kaggle Survey Data", href="#"), ": Industry survey covering education, skills, tools."]),
+        html.Li([html.A("Stanford AI Index", href="#"), ": Insights into AI economic trends, hiring rates."]),
+        html.Li([html.A("Job Posting Data", href="#"), ": Categorized job postings detailing requirements."])
     ], className="text-muted"),
 ], className="mt-5 pb-5")
 
 # Tabs Content
 tab1_content = dbc.Card(dbc.CardBody([
-    html.H4("Supply Side: Education & Graduates", className="card-title mb-3", style={"color": COLOR_TEAL}),
+    html.H4("Supply Side: Education & Graduates", className="card-title mb-3 text-cyan"),
     html.P("🖱️ Click a Program in the 'Graduates' chart to cross-filter the Tuition and Education charts below.", className="text-muted"),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='chart-1-1-graduates'), md=6),
-        dbc.Col(dcc.Graph(id='chart-1-2-edu'), md=6)
+        dbc.Col(dcc.Graph(id='chart-1-1-graduates', config={'displayModeBar': False}), md=6),
+        dbc.Col(dcc.Graph(id='chart-1-2-edu', config={'displayModeBar': False}), md=6)
     ]),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='chart-1-4-tuition'), md=12)
+        dbc.Col(dcc.Graph(id='chart-1-4-tuition', config={'displayModeBar': False}), md=12)
     ])
-]), style=card_style, className="mt-3")
+]), className="glass-card mt-3")
 
 tab2_content = dbc.Card(dbc.CardBody([
-    html.H4("Demand Side: Jobs & Requirements", className="card-title mb-3", style={"color": COLOR_TEAL}),
+    html.H4("Demand Side: Jobs & Requirements", className="card-title mb-3 text-cyan"),
     html.P("🖱️ Click a Job Title in the 'Vacancies' chart to cross-filter Skills and Salary.", className="text-muted"),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='chart-2-1-jobs'), md=6),
-        dbc.Col(dcc.Graph(id='chart-2-2-skills'), md=6)
+        dbc.Col(dcc.Graph(id='chart-2-1-jobs', config={'displayModeBar': False}), md=6),
+        dbc.Col(dcc.Graph(id='chart-2-2-skills', config={'displayModeBar': False}), md=6)
     ]),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='chart-2-4-salary'), md=12)
+        dbc.Col(dcc.Graph(id='chart-2-4-salary', config={'displayModeBar': False}), md=12)
     ])
-]), style=card_style, className="mt-3")
+]), className="glass-card mt-3")
 
 tab3_content = dbc.Card(dbc.CardBody([
-    html.H4("Skill Mismatch Analysis", className="card-title mb-3", style={"color": COLOR_TEAL}),
+    html.H4("Skill Mismatch Analysis", className="card-title mb-3 text-cyan"),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='chart-3-1-radar'), md=6),
-        dbc.Col(dcc.Graph(id='chart-3-2-scatter'), md=6)
+        dbc.Col(dcc.Graph(id='chart-3-1-radar', config={'displayModeBar': False}), md=6),
+        dbc.Col(dcc.Graph(id='chart-3-2-scatter', config={'displayModeBar': False}), md=6)
     ])
-]), style=card_style, className="mt-3")
+]), className="glass-card mt-3")
 
 app.layout = dbc.Container([
     header,
@@ -211,9 +217,9 @@ app.layout = dbc.Container([
         dbc.Tab(tab1_content, label="1. Supply (Education)"),
         dbc.Tab(tab2_content, label="2. Demand (Jobs)"),
         dbc.Tab(tab3_content, label="3. Skill Mismatch")
-    ]),
+    ], className="nav-tabs"),
     footer
-], fluid=True, style={"backgroundColor": "#0b101e", "minHeight": "100vh", "padding": "20px"})
+], fluid=True)
 
 # ==========================================
 # 3. CALLBACKS
@@ -230,9 +236,12 @@ def update_tab1(clickData):
     if clickData:
         selected_program = clickData['points'][0]['x']
 
-    fig_grad = px.bar(supply_graduates, x='Program', y='Graduates', color='Year', 
-                      title='Graduates per Year by Program', template=CHART_TEMPLATE, 
-                      color_discrete_sequence=[COLOR_TEAL, COLOR_CORAL, "#38bdf8", "#818cf8"])
+    fig_grad = px.line(supply_graduates, x='Year', y='Graduates', color='Program', 
+                      title='Graduates per Year by Program (Trend)', 
+                      color_discrete_sequence=SCI_FI_PALETTE, markers=True)
+    # Area fill
+    fig_grad.update_traces(fill='tozeroy', mode='lines+markers', line_shape='spline')
+    fig_grad = apply_sci_fi_layout(fig_grad)
     
     df_e = df_edu_bg
     df_t = supply_tuition
@@ -241,10 +250,12 @@ def update_tab1(clickData):
         df_t = supply_tuition[supply_tuition['Program'] == selected_program]
 
     fig_edu = px.pie(df_e, names='degree', values='percentage', title='Education Background Distribution', 
-                     hole=0.4, template=CHART_TEMPLATE, color_discrete_sequence=[COLOR_TEAL, COLOR_CORAL, "#38bdf8", "#818cf8"])
+                     hole=0.75, color_discrete_sequence=SCI_FI_PALETTE)
+    fig_edu = apply_sci_fi_layout(fig_edu)
     
     fig_tui = px.bar(df_t, x='Program', y='Tuition_USD', title='Average Tuition Fees (USD)', text_auto=True, 
-                     template=CHART_TEMPLATE, color_discrete_sequence=[COLOR_CORAL])
+                     color_discrete_sequence=[COLOR_MAGENTA])
+    fig_tui = apply_sci_fi_layout(fig_tui)
     
     return fig_grad, fig_edu, fig_tui
 
@@ -261,7 +272,8 @@ def update_tab2(clickData):
 
     df_jobs_sorted = demand_jobs.sort_values(by='Vacancies', ascending=True)
     fig_jobs = px.bar(df_jobs_sorted, x='Vacancies', y='Job Title', orientation='h', 
-                      title='Open Job Positions', template=CHART_TEMPLATE, color_discrete_sequence=[COLOR_TEAL])
+                      title='Open Job Positions', color_discrete_sequence=[COLOR_CYAN])
+    fig_jobs = apply_sci_fi_layout(fig_jobs)
     
     df_s = demand_skills
     df_sal = demand_salary
@@ -277,12 +289,14 @@ def update_tab2(clickData):
         
     df_s_sorted = df_s.sort_values(by='demand_score', ascending=True)
     fig_skills = px.bar(df_s_sorted, x='demand_score', y='skill', orientation='h', 
-                        title=f'Top Required Skills (%){title_suffix}', text_auto=True, template=CHART_TEMPLATE,
-                        color_discrete_sequence=[COLOR_CORAL])
+                        title=f'Top Required Skills (%){title_suffix}', text_auto=True,
+                        color_discrete_sequence=[COLOR_MAGENTA])
+    fig_skills = apply_sci_fi_layout(fig_skills)
     
     fig_sal = px.bar(df_sal, x='Level', y='Salary_USD', color='Region', barmode='group', 
-                     title=f'Average Starting Salary{title_suffix}', template=CHART_TEMPLATE,
-                     color_discrete_sequence=[COLOR_TEAL, COLOR_CORAL, "#38bdf8"])
+                     title=f'Average Starting Salary{title_suffix}',
+                     color_discrete_sequence=SCI_FI_PALETTE)
+    fig_sal = apply_sci_fi_layout(fig_sal)
     fig_sal.update_layout(xaxis={'categoryorder':'array', 'categoryarray':['Entry-Level (0-2 Yrs)','Mid-Level (3-5 Yrs)','Expert/Senior (5+ Yrs)']})
     
     return fig_jobs, fig_skills, fig_sal
@@ -299,30 +313,37 @@ def update_tab3(_):
         theta=mismatch_df['skill'].tolist() + [mismatch_df['skill'].tolist()[0]],
         fill='toself',
         name='Supply (Taught)',
-        line_color=COLOR_TEAL
+        line_color=COLOR_CYAN,
+        fillcolor='rgba(0, 240, 255, 0.2)'
     ))
     fig_radar.add_trace(go.Scatterpolar(
         r=mismatch_df['Demand_Norm'].tolist() + [mismatch_df['Demand_Norm'].tolist()[0]],
         theta=mismatch_df['skill'].tolist() + [mismatch_df['skill'].tolist()[0]],
         fill='toself',
         name='Demand (Required)',
-        line_color=COLOR_CORAL
+        line_color=COLOR_MAGENTA,
+        fillcolor='rgba(181, 55, 242, 0.2)'
     ))
-    fig_radar.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 1])), 
-                            showlegend=True, title="Skill Gap & Overlap", template=CHART_TEMPLATE)
+    fig_radar = apply_sci_fi_layout(fig_radar)
+    fig_radar.update_layout(polar=dict(
+        radialaxis=dict(visible=True, range=[0, 1], gridcolor=COLOR_GRID),
+        angularaxis=dict(gridcolor=COLOR_GRID, linecolor=COLOR_GRID),
+        bgcolor='rgba(0,0,0,0)'
+    ), showlegend=True, title="Skill Gap & Overlap")
     
     fig_scatter = px.scatter(
         mismatch_df, x='demand_score', y='supply_score', text='skill', 
         title='Shortage vs Surplus Matrix',
-        labels={'demand_score': 'Market Demand (%)', 'supply_score': 'Graduate Supply (%)'},
-        template=CHART_TEMPLATE
+        labels={'demand_score': 'Market Demand (%)', 'supply_score': 'Graduate Supply (%)'}
     )
-    fig_scatter.update_traces(textposition='top center', marker=dict(size=12, color=COLOR_TEAL))
-    fig_scatter.add_hline(y=50, line_dash="dash", line_color="gray")
-    fig_scatter.add_vline(x=50, line_dash="dash", line_color="gray")
+    fig_scatter.update_traces(textposition='top center', marker=dict(size=14, color=COLOR_CYAN, line=dict(width=2, color=COLOR_MAGENTA)))
+    fig_scatter = apply_sci_fi_layout(fig_scatter)
     
-    fig_scatter.add_annotation(x=75, y=25, text="High Demand, Low Supply<br>(Shortage)", showarrow=False, opacity=0.8, font=dict(color=COLOR_CORAL))
-    fig_scatter.add_annotation(x=25, y=75, text="Low Demand, High Supply<br>(Surplus)", showarrow=False, opacity=0.8, font=dict(color=COLOR_TEAL))
+    fig_scatter.add_hline(y=50, line_dash="dash", line_color=COLOR_TEXT_SEC)
+    fig_scatter.add_vline(x=50, line_dash="dash", line_color=COLOR_TEXT_SEC)
+    
+    fig_scatter.add_annotation(x=75, y=25, text="High Demand, Low Supply<br>(Shortage)", showarrow=False, opacity=0.8, font=dict(color=COLOR_MAGENTA))
+    fig_scatter.add_annotation(x=25, y=75, text="Low Demand, High Supply<br>(Surplus)", showarrow=False, opacity=0.8, font=dict(color=COLOR_CYAN))
     fig_scatter.update_layout(xaxis_range=[0, 100], yaxis_range=[0, 100])
     
     return fig_radar, fig_scatter

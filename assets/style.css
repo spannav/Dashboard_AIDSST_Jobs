@@ -1,0 +1,79 @@
+/* style.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+body {
+    background: linear-gradient(135deg, #0B1021 0%, #101835 100%);
+    color: #FFFFFF;
+    font-family: 'Inter', 'Roboto', 'Segoe UI', sans-serif;
+    min-height: 100vh;
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+    background: rgba(16, 24, 53, 0.6) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(10px);
+}
+
+.glass-card .card-title {
+    color: #00F0FF !important;
+    font-weight: 600;
+}
+
+/* Typography Overrides */
+h1, h2, h3, h4, h5, h6 {
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+p, .text-muted {
+    color: #8DA3C7 !important;
+}
+
+/* Accent texts */
+.text-cyan {
+    color: #00F0FF !important;
+}
+.text-magenta {
+    color: #B537F2 !important;
+}
+
+/* Gradient Buttons / Tabs */
+.nav-tabs {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+}
+
+.nav-tabs .nav-link {
+    color: #8DA3C7;
+    border: none;
+    border-radius: 50px;
+    margin-right: 10px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #FFFFFF;
+    background: rgba(0, 240, 255, 0.1);
+}
+
+.nav-tabs .nav-link.active {
+    background: linear-gradient(90deg, #00F0FF 0%, #B537F2 100%) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 0 15px rgba(181, 55, 242, 0.6);
+    border: none;
+}
+
+/* Links */
+a {
+    color: #00F0FF;
+    text-decoration: none;
+    transition: text-shadow 0.3s ease;
+}
+a:hover {
+    color: #FFFFFF;
+    text-shadow: 0 0 8px #00F0FF;
+}
